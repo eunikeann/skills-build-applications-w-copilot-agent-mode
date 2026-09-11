@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import { fetchCollection } from '../api'
+import { API_BASE_URL, fetchCollection } from '../api'
+
+const WORKOUTS_API_URL = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts/`
+  : `${API_BASE_URL}/api/workouts/`
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([])
@@ -7,7 +11,7 @@ function Workouts() {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetchCollection('workouts', controller.signal).then(setWorkouts).catch((requestError) => {
+    fetchCollection('workouts', controller.signal, WORKOUTS_API_URL).then(setWorkouts).catch((requestError) => {
       if (requestError.name !== 'AbortError') setError(requestError.message)
     })
     return () => controller.abort()
